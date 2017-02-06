@@ -4,7 +4,7 @@ Template::Plugin::RndString - Plugin to create random strings
 
 # SYNOPSIS
 
-    [% USE RndString(chrset => [a..z]) %]
+    [% USE RndString(chrset => ['a'..'z']) %]
 
     Result: [% RndString.make(min_length,max_length) %]
 
@@ -12,7 +12,7 @@ Template::Plugin::RndString - Plugin to create random strings
 
 - chrset
 
-    Optional. It must be an array ref of characters to use. If not defined, default is an alphanumeric symbols from ascii table.
+    Optional. It must be an array ref of characters to use or a string (e.g 'abcdefgh'). If not defined, default is an alphanumeric symbols from ascii table. If possible, first symbol of output string always will be a letter.
 
 # SEE ALSO
 
@@ -21,7 +21,7 @@ Crypt::GeneratePassword - generate secure random pronounceable passwords [http:/
 
 # LICENSE
 
-Copyright (C) mr.bbon.
+Copyright (C) bbon.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

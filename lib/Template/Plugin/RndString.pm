@@ -5,14 +5,21 @@ use warnings;
 use base 'Template::Plugin';
 use Crypt::GeneratePassword qw(chars);
 
-our $VERSION = "0.01";
+our $VERSION = "0.02";
 
 sub new {
     my ($class, $context, $args) = @_;
+
     my $chrset = [0..9, 'A'..'Z', 'a'..'z'];
     if ($args && (ref $args eq 'HASH')) {
-        if (defined $args->{chrset} && (ref $args->{chrset} eq 'ARRAY')) {
-            $chrset = $args->{chrset};
+        if (defined $args->{chrset}) {
+            if (ref $args->{chrset} eq 'ARRAY') {
+                $chrset = $args->{chrset};
+            }
+            elsif (!ref $args->{chrset}) {
+                my @s = split '', $args->{chrset};
+                $chrset = \@s;
+            }
         }
     }
 
@@ -24,6 +31,8 @@ sub new {
 
 sub make {
     my ($self, $minlen, $maxlen) = @_;
+    my $fs = "";
+
     if ($minlen && $maxlen) {
         unless (($minlen =~ m/^\d+$/) && ($maxlen =~ m/^\d+$/) && ($minlen <= $maxlen)) {
             $minlen = $maxlen = 32;
@@ -32,10 +41,18 @@ sub make {
     else {
         $minlen = $maxlen = 32;
     }
+
     srand;
+
+    my @letters = grep {m/^[A-Z]$/i} @{$self->{chrset}};
+
+    if (@letters) {
+        --$minlen; --$maxlen;
+        $fs = chars(1,1, \@letters);
+    }
+
     my $len = int($minlen + (1+$maxlen-$minlen)*rand);
-    my @set = eval $self->{chrset};
-    return chars($len,$len, $self->{chrset});
+    return $fs . chars($len,$len, $self->{chrset});
 }
 1;
 
@@ -49,7 +66,7 @@ Template::Plugin::RndString - Plugin to create random strings
 
 =head1 SYNOPSIS
 
-    [% USE RndString(chrset => [a..z]) %]
+    [% USE RndString(chrset => ['a'..'z']) %]
 
     Result: [% RndString.make(min_length,max_length) %]
 
@@ -59,7 +76,7 @@ Template::Plugin::RndString - Plugin to create random strings
 
 =item chrset
 
-Optional. It must be an array ref of characters to use. If not defined, default is an alphanumeric symbols from ascii table.
+Optional. It must be an array ref of characters to use or a string (e.g 'abcdefgh'). If not defined, default is an alphanumeric symbols from ascii table. If possible, first symbol of output string always will be a letter.
 
 =back
 
@@ -70,7 +87,7 @@ Crypt::GeneratePassword - generate secure random pronounceable passwords L<http:
 
 =head1 LICENSE
 
-Copyright (C) mr.bbon.
+Copyright (C) bbon.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
