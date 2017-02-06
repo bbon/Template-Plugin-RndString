@@ -1,18 +1,27 @@
 # NAME
 
-Template::Plugin::RndString - It's new $module
+Template::Plugin::RndString - Plugin to create random strings
 
 # SYNOPSIS
 
-    use Template::Plugin::RndString;
+    [% USE RndString(chrset => [a..z]) %]
 
-# DESCRIPTION
+    Result: [% RndString.make(min_length,max_length) %]
 
-Template::Plugin::RndString is ...
+# OPTIONS 
+
+- chrset
+
+    Optional. It must be an array ref of characters to use. If not defined, default is an alphanumeric symbols from ascii table.
+
+# SEE ALSO
+
+Template Toolkit is a fast, flexible and highly extensible template processing system [http://template-toolkit.org/](http://template-toolkit.org/)
+Crypt::GeneratePassword - generate secure random pronounceable passwords [http://search.cpan.org/~neilb/Crypt-GeneratePassword/lib/Crypt/GeneratePassword.pm](http://search.cpan.org/~neilb/Crypt-GeneratePassword/lib/Crypt/GeneratePassword.pm)
 
 # LICENSE
 
-Copyright (C) bbon.
+Copyright (C) mr.bbon.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

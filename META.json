@@ -1,5 +1,5 @@
 {
-   "abstract" : "It's new $module",
+   "abstract" : "Plugin to create random strings",
    "author" : [
       "bbon <bbon@mail.ru>"
    ],
@@ -42,6 +42,9 @@
       },
       "runtime" : {
          "requires" : {
+            "Crypt::GeneratePassword" : "0",
+            "Template" : "0",
+            "Template::Plugin" : "0",
             "perl" : "5.008001"
          }
       },
@@ -52,6 +55,20 @@
       }
    },
    "release_status" : "unstable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/bbon/Template-Plugin-RndString/issues"
+      },
+      "homepage" : "https://github.com/bbon/Template-Plugin-RndString",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/bbon/Template-Plugin-RndString.git",
+         "web" : "https://github.com/bbon/Template-Plugin-RndString"
+      }
+   },
    "version" : "0.01",
-   "x_authority" : "cpan:BBON"
+   "x_authority" : "cpan:BBON",
+   "x_contributors" : [
+      "mr.bbon <nu@nu-nu.ru>"
+   ]
 }
