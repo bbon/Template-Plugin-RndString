@@ -2,27 +2,71 @@ package Template::Plugin::RndString;
 use 5.008001;
 use strict;
 use warnings;
+use base 'Template::Plugin';
+use Crypt::GeneratePassword qw(chars);
 
 our $VERSION = "0.01";
 
+sub new {
+    my ($class, $context, $args) = @_;
+    my $chrset = [0..9, 'A'..'Z', 'a'..'z'];
+    if ($args && (ref $args eq 'HASH')) {
+        if (defined $args->{chrset} && (ref $args->{chrset} eq 'ARRAY')) {
+            $chrset = $args->{chrset};
+        }
+    }
 
+    bless { 
+        context => $context,
+        chrset  => $chrset,
+    }, $class;
+}
 
+sub make {
+    my ($self, $minlen, $maxlen) = @_;
+    if ($minlen && $maxlen) {
+        unless (($minlen =~ m/^\d+$/) && ($maxlen =~ m/^\d+$/) && ($minlen <= $maxlen)) {
+            $minlen = $maxlen = 32;
+        }
+    }
+    else {
+        $minlen = $maxlen = 32;
+    }
+    srand;
+    my $len = int($minlen + (1+$maxlen-$minlen)*rand);
+    my @set = eval $self->{chrset};
+    return chars($len,$len, $self->{chrset});
+}
 1;
+
 __END__
 
 =encoding utf-8
 
 =head1 NAME
 
-Template::Plugin::RndString - It's new $module
+Template::Plugin::RndString - Plugin to create random strings
 
 =head1 SYNOPSIS
 
-    use Template::Plugin::RndString;
+    [% USE RndString(chrset => [a..z]) %]
 
-=head1 DESCRIPTION
+    Result: [% RndString.make(min_length,max_length) %]
 
-Template::Plugin::RndString is ...
+=head1 OPTIONS 
+
+=over
+
+=item chrset
+
+Optional. It must be an array ref of characters to use. If not defined, default is an alphanumeric symbols from ascii table.
+
+=back
+
+=head1 SEE ALSO
+
+Template Toolkit is a fast, flexible and highly extensible template processing system L<http://template-toolkit.org/>
+Crypt::GeneratePassword - generate secure random pronounceable passwords L<http://search.cpan.org/~neilb/Crypt-GeneratePassword/lib/Crypt/GeneratePassword.pm>
 
 =head1 LICENSE
 
@@ -33,7 +77,7 @@ it under the same terms as Perl itself.
 
 =head1 AUTHOR
 
-mr.bbon E<lt>nu@nu-nu.ruE<gt>
+bbon E<lt>bbon@mail.ruE<gt>
 
 =cut
 

@@ -4,3 +4,6 @@ on 'test' => sub {
     requires 'Test::More', '0.98';
 };
 
+requires 'Template';
+requires 'Template::Plugin';
+requires 'Crypt::GeneratePassword';
